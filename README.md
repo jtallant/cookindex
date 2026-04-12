@@ -1,8 +1,8 @@
 # The Cook Index
 
-**[CookIndex.ai](https://cookindex.ai)** — A quarterly economic index tracking whether AI-driven labor displacement is triggering a demand crisis.
+A quarterly economic index tracking whether AI-driven labor displacement is triggering a demand crisis.
 
-The index is called **DDI (Deficient Demand Index)**, named after the research paper ["Abundant Intelligence and Deficient Demand"](https://arxiv.org/abs/2603.09209) (Chen, 2026) that it's based on. The website is CookIndex.ai.
+The index is called **DDI (Deficient Demand Index)**, named after the research paper ["Abundant Intelligence and Deficient Demand"](https://arxiv.org/abs/2603.09209) (Chen, 2026) that it's based on.
 
 ## The Thesis
 
@@ -92,7 +92,7 @@ The homepage (`index.html`) is a static file. To update it with fresh data:
 ## Project Structure
 
 ```
-├── index.html                       # Static homepage (CookIndex.ai)
+├── index.html                       # Static homepage
 ├── ddi.php                          # Composite index — fetches data, computes score
 ├── src/
 │   ├── TimeSeries.php               # Value object for time series data
