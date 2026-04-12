@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Cook Index — How Cooked Are We?</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0a0a;
+            color: #e0e0e0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            padding: 0 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 40px 0 80px;
+        }
+
+        /* --- Hero --- */
+
+        .hero {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .hero h1 {
+            font-size: 21px;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: #888;
+            margin-bottom: 30px;
+        }
+
+        .score {
+            font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+            font-size: 92px;
+            font-weight: 700;
+            color: #e8c547;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .score-max {
+            font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+            font-size: 23px;
+            color: #888;
+            margin-bottom: 16px;
+        }
+
+        .score-label {
+            font-size: 16px;
+            color: #888;
+            margin-bottom: 30px;
+        }
+
+        .tagline {
+            font-size: 18px;
+            color: #aaa;
+            line-height: 1.7;
+            margin-bottom: 16px;
+        }
+
+        .paper-link {
+            font-size: 15px;
+        }
+
+        .paper-link a {
+            color: #5a9fcf;
+            text-decoration: none;
+        }
+
+        .paper-link a:hover {
+            text-decoration: underline;
+        }
+
+        /* --- Sections --- */
+
+        section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #888;
+            margin-bottom: 20px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #252525;
+        }
+
+        /* --- Plain English --- */
+
+        .plain-english h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #ccc;
+            margin-top: 28px;
+            margin-bottom: 12px;
+        }
+
+        .plain-english p {
+            font-size: 17px;
+            color: #bbb;
+            margin-bottom: 16px;
+            line-height: 1.7;
+        }
+
+        .plain-english p:last-child {
+            color: #e0e0e0;
+            font-weight: 500;
+        }
+
+        /* --- GDP Table --- */
+
+        .blast-radius {
+            font-size: 16px;
+            color: #888;
+            margin-top: 16px;
+            font-style: italic;
+        }
+
+        /* --- Tables --- */
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th {
+            text-align: left;
+            font-weight: 600;
+            color: #888;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 8px 0;
+            border-bottom: 1px solid #252525;
+        }
+
+        td {
+            padding: 10px 0;
+            border-bottom: 1px solid #1e1e1e;
+            vertical-align: top;
+        }
+
+        .mono {
+            font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+        }
+
+        .right {
+            text-align: right;
+        }
+
+        .dim {
+            color: #888;
+        }
+
+        .exposure-critical {
+            color: #e85d5d;
+        }
+
+        .exposure-low {
+            color: #aaa;
+        }
+
+        .exposure-delayed {
+            color: #999;
+        }
+
+        /* --- Indicator Rows --- */
+
+        .indicator-row {
+            display: flex;
+            flex-direction: column;
+            padding: 14px 0;
+            border-bottom: 1px solid #1e1e1e;
+        }
+
+        .indicator-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .indicator-name {
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+.indicator-bar-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 6px;
+        }
+
+        .indicator-bar {
+            flex: 1;
+            height: 6px;
+            background: #222;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .indicator-bar-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        .indicator-signal {
+            font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+            font-size: 15px;
+            min-width: 28px;
+            text-align: right;
+        }
+
+        .indicator-detail {
+            font-size: 14px;
+            color: #888;
+            font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+        }
+
+        .indicator-expand {
+            margin-top: 8px;
+        }
+
+        .indicator-expand summary {
+            font-size: 14px;
+            color: #aaa;
+            cursor: pointer;
+            list-style: none;
+            user-select: none;
+            padding: 6px 10px;
+            border: 1px solid #2a2a2a;
+            border-radius: 4px;
+            transition: border-color 0.2s ease, background 0.2s ease;
+        }
+
+        .indicator-expand summary:hover {
+            border-color: #444;
+            background: #161616;
+        }
+
+        .indicator-expand summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .indicator-expand summary::before {
+            content: '+ ';
+            font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+            color: #888;
+        }
+
+        .indicator-expand[open] summary::before {
+            content: '- ';
+        }
+
+        .indicator-expand-body {
+            margin-top: 10px;
+            padding: 12px 0;
+            font-size: 15px;
+            color: #999;
+            line-height: 1.7;
+            border-top: 1px solid #1e1e1e;
+        }
+
+        .indicator-expand-body p {
+            margin-bottom: 10px;
+        }
+
+        .indicator-expand-body p:last-child {
+            margin-bottom: 0;
+        }
+
+        .indicator-expand-body strong {
+            color: #bbb;
+            font-weight: 500;
+        }
+
+        /* Signal colors */
+        .signal-none { color: #666; }
+        .signal-low { color: #7a8a3e; }
+        .signal-moderate { color: #c9a227; }
+        .signal-strong { color: #d4763a; }
+        .signal-critical { color: #e85d5d; }
+
+        .bar-none { background: #2a2a2a; }
+        .bar-low { background: #7a8a3e; }
+        .bar-moderate { background: #c9a227; }
+        .bar-strong { background: #d4763a; }
+        .bar-critical { background: #e85d5d; }
+
+        /* --- Falsification --- */
+
+        .falsification-summary {
+            font-size: 16px;
+            color: #aaa;
+            margin-bottom: 16px;
+        }
+
+        .falsification-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            font-size: 15px;
+            border-bottom: 1px solid #1e1e1e;
+        }
+
+        .falsification-label {
+            color: #888;
+        }
+
+        .falsification-met {
+            color: #7a8a3e;
+            font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+            font-size: 14px;
+        }
+
+        .falsification-not-met {
+            color: #666;
+            font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+            font-size: 14px;
+        }
+
+        /* --- Subsector Detail --- */
+
+        .subsector-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            font-size: 15px;
+            border-bottom: 1px solid #1e1e1e;
+        }
+
+        .subsector-name {
+            color: #888;
+        }
+
+        .subsector-value {
+            font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+        }
+
+        .declining {
+            color: #e85d5d;
+        }
+
+        .stable {
+            color: #888;
+        }
+
+        .growing {
+            color: #7a8a3e;
+        }
+
+        .subsector-flag {
+            font-size: 13px;
+            color: #e85d5d;
+            margin-left: 6px;
+        }
+
+        /* --- ECI --- */
+
+        .eci-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            font-size: 15px;
+            border-bottom: 1px solid #1e1e1e;
+        }
+
+        .eci-sector {
+            flex: 1;
+            color: #888;
+        }
+
+        .eci-values {
+            font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+            text-align: right;
+            min-width: 160px;
+        }
+
+        .eci-pattern {
+            font-size: 13px;
+            color: #c9a227;
+            text-align: right;
+            margin-top: 2px;
+        }
+
+        .eci-healthy {
+            color: #7a8a3e;
+        }
+
+        .eci-legend {
+            font-size: 14px;
+            color: #777;
+            margin-top: 12px;
+            line-height: 1.6;
+        }
+
+        /* --- Convergence --- */
+
+        .convergence {
+            font-size: 15px;
+            color: #888;
+            padding: 12px 0;
+        }
+
+        /* --- Footer --- */
+
+        footer {
+            border-top: 1px solid #252525;
+            padding-top: 30px;
+            font-size: 14px;
+            color: #777;
+            line-height: 2;
+        }
+
+        footer a {
+            color: #5a9fcf;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        .updated {
+            margin-top: 16px;
+            color: #666;
+        }
+
+        /* --- Not Scored Label --- */
+
+        .not-scored {
+            font-size: 13px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 12px;
+        }
+
+        .section-note {
+            font-size: 14px;
+            color: #777;
+            margin-bottom: 16px;
+        }
+
+        /* --- GDP Exposure --- */
+
+        .gdp-block {
+            padding: 16px 0;
+            border-bottom: 1px solid #1e1e1e;
+        }
+
+        .gdp-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 6px;
+        }
+
+        .gdp-sector {
+            font-size: 17px;
+            font-weight: 500;
+        }
+
+        .gdp-pct {
+            font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+            font-size: 23px;
+            font-weight: 600;
+        }
+
+        .gdp-exposure {
+            font-size: 15px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <!-- 1. Hero -->
+        <div class="hero">
+            <h1>The Cook Index</h1>
+            <div class="score">29.9</div>
+            <div class="score-max">/ 100</div>
+            <div class="score-label">Noise range — some movement but within historical norms</div>
+            <p class="tagline">The Cook Index tracks whether AI is replacing workers so fast that there won't be enough people with money left to buy what AI produces, creating a feedback loop that ends in total economic collapse. So the question is, how cooked are we?</p>
+            <p class="paper-link">Based on <a href="https://arxiv.org/abs/2603.09209" target="_blank">Abundant Intelligence and Deficient Demand</a></p>
+        </div>
+
+        <!-- 2. Plain English -->
+        <section class="plain-english">
+            <h2>How it works</h2>
+            <p>AI replaces white collar work — software engineers, analysts, marketers, accountants. These aren't minimum wage jobs. These are the people who spend money on houses, cars, restaurants, and renovations.</p>
+            <p>Companies that replace workers with AI look great on paper. Profits go up. Efficiency goes up. GDP goes up. But the workers they fired were also everyone else's customers.</p>
+            <p>Then it spreads. The trades can't be replaced by AI — you still need a human to remodel a kitchen. But if nobody can afford to remodel their kitchen, it doesn't matter. Plumbers, electricians, contractors all lose business anyway. Not because of AI, but because the money dried up.</p>
+            <p>If every company can increase profits without hiring people — or by firing them — that looks fantastic in isolation. But if everyone does it at the same time, there's nobody left to pay for the services. The same efficiency that boosted their margins destroys their customer base.</p>
+            <p>That's the feedback loop. That's what this index tracks.</p>
+
+            <h3>Where does the money go?</h3>
+            <p>A worker who earns $100K spends most of it — rent, groceries, car payments, restaurants, vacations. That spending becomes someone else's income. An AI agent that replaces that worker costs a fraction of the salary and buys exactly nothing. No coffee, no groceries, no rent, no vacations. The productivity stays, but the spending disappears.</p>
+            <p>That $100K becomes corporate profit instead of a paycheck. It goes to owners and investors, not back into the economy the way a salary does. GDP keeps growing — AI is producing real output — but the money that used to circulate through millions of paychecks into millions of cash registers is pooling at the top. That's Ghost GDP.</p>
+            <p>Eventually, even the shareholders lose. The companies they own can't sustain revenue when their customers are gone.</p>
+        </section>
+
+        <!-- 3. Where the US economy is exposed -->
+        <section>
+            <h2>Where the US economy is exposed</h2>
+            <div class="gdp-block">
+                <div class="gdp-header">
+                    <span class="gdp-sector">Private Services</span>
+                    <span class="gdp-pct exposure-critical">73.2%</span>
+                </div>
+                <div class="gdp-exposure exposure-critical">Critical. This is where the feedback loop lives — finance, tech, professional services, insurance, marketing.</div>
+            </div>
+            <div class="gdp-block">
+                <div class="gdp-header">
+                    <span class="gdp-sector">Private Goods</span>
+                    <span class="gdp-pct exposure-low">15.7%</span>
+                </div>
+                <div class="gdp-exposure exposure-low">Low for now. Physical labor, but if services workers stop spending, goods demand falls too.</div>
+            </div>
+            <div class="gdp-block">
+                <div class="gdp-header">
+                    <span class="gdp-sector">Government</span>
+                    <span class="gdp-pct exposure-delayed">11.1%</span>
+                </div>
+                <div class="gdp-exposure exposure-delayed">Potentially delayed. Government moves slowly — bureaucracy, procurement rules, and union protections could slow AI adoption.</div>
+            </div>
+            <p class="blast-radius">73% of the US economy is services. That's the blast radius.</p>
+        </section>
+
+        <!-- 4. The 7 Indicators -->
+        <section>
+            <h2>Indicators</h2>
+
+            <div class="indicator-row">
+                <div class="indicator-header">
+                    <span class="indicator-name">Workers' Share of Income</span>
+                </div>
+                <div class="indicator-bar-container">
+                    <div class="indicator-bar"><div class="indicator-bar-fill bar-strong" style="width: 70%"></div></div>
+                    <span class="indicator-signal signal-strong">0.7</span>
+                </div>
+                <details class="indicator-expand">
+                    <summary>Are workers getting a shrinking share of the money the economy generates?</summary>
+                    <div class="indicator-expand-body">
+                        <p>Labor share measures what fraction of national income goes to workers (wages + benefits) vs. capital owners (profits, interest, rent). It's been declining for decades, but we're watching for an <strong>acceleration</strong> beyond the historical trend.</p>
+                        <p><strong>Why it matters:</strong> Workers spend most of their income. Capital owners don't. If income shifts from paychecks to profits, spending power drops even if the economy looks fine on paper.</p>
+                        <p class="indicator-detail">96.937 → 96.224 · YoY: -0.713 · accel: -0.513 beyond baseline</p>
+                        <p><strong>Source:</strong> FRED series PRS85006173 (Nonfarm Business Sector: Labor Share)</p>
+                    </div>
+                </details>
+            </div>
+
+            <div class="indicator-row">
+                <div class="indicator-header">
+                    <span class="indicator-name">AI-Sector Hiring Gap</span>
+                </div>
+                <div class="indicator-bar-container">
+                    <div class="indicator-bar"><div class="indicator-bar-fill bar-none" style="width: 0%"></div></div>
+                    <span class="indicator-signal signal-none">0.0</span>
+                </div>
+                <details class="indicator-expand">
+                    <summary>Are companies in tech, finance, and professional services posting fewer jobs than the rest of the economy?</summary>
+                    <div class="indicator-expand-body">
+                        <p>Compares job openings in AI-exposed sectors (tech, finance, professional services) against the overall economy. Hiring freezes show up before layoffs — the absence of new postings is the earliest signal that companies are choosing AI over headcount.</p>
+                        <p><strong>Why it matters:</strong> Companies stop posting jobs before they start laying people off. If tech, finance, and professional services go quiet while everyone else is still hiring, AI is replacing headcount.</p>
+                        <p class="indicator-detail">Control: -4.97% · Exposed: +3.63% · Gap: -8.60 percentage points</p>
+                        <p><strong>Source:</strong> BLS JOLTS (Job Openings and Labor Turnover Survey) — Professional Services, Information, Finance vs. Total Nonfarm</p>
+                    </div>
+                </details>
+            </div>
+
+            <div class="indicator-row">
+                <div class="indicator-header">
+                    <span class="indicator-name">Debt Stress</span>
+                </div>
+                <div class="indicator-bar-container">
+                    <div class="indicator-bar"><div class="indicator-bar-fill bar-moderate" style="width: 30%"></div></div>
+                    <span class="indicator-signal signal-moderate">0.3</span>
+                </div>
+                <details class="indicator-expand">
+                    <summary>Are people falling behind on mortgage and debt payments even when most have jobs?</summary>
+                    <div class="indicator-expand-body">
+                        <p>Tracks whether the debt system is breaking. When high-income workers lose income, their fixed debt obligations (mortgages, car payments) don't adjust. The paper models that a 20% income drop raises prime mortgage default probability from ~2.1% to ~18.1%.</p>
+                        <p>If unemployment is 8% and people are missing mortgage payments, that's normal — they lost their jobs in a recession. Every recession does this. But if unemployment is 4.3% (like right now) and debt stress is creeping up, that's unusual. Almost everyone has a job. So why are people struggling to pay their bills?</p>
+                        <p>The answer: because the jobs they have pay less than the jobs they lost. A financial analyst making $100K gets displaced, picks up work making $60K, but still owes the mortgage they took out on the old salary. They're employed but underwater. That's why this signal is <strong>amplified when unemployment is low</strong> — credit stress during full employment points to structural displacement, not a normal downturn. $13T in residential mortgages are exposed.</p>
+                        <p class="indicator-detail">Delinq: 0.00 · Debt Svc: 0.40 · Unemp: 4.3% (×1.3)</p>
+                        <p><strong>Source:</strong> FRED — Mortgage delinquency (DRSFRMACBS), credit card delinquency (DRCCLACBS), household debt service ratio (TDSP), unemployment rate (UNRATE)</p>
+                    </div>
+                </details>
+            </div>
+
+            <div class="indicator-row">
+                <div class="indicator-header">
+                    <span class="indicator-name">AI-Sector Job Losses</span>
+                </div>
+                <div class="indicator-bar-container">
+                    <div class="indicator-bar"><div class="indicator-bar-fill bar-low" style="width: 10%"></div></div>
+                    <span class="indicator-signal signal-low">0.1</span>
+                </div>
+                <details class="indicator-expand">
+                    <summary>Are AI-exposed industries actually cutting workers while the rest of the economy holds steady?</summary>
+                    <div class="indicator-expand-body">
+                        <p>Compares actual headcount in AI-exposed sectors against the overall economy. Job openings show hiring intent; this shows whether people are actually losing jobs. If AI-exposed sectors are shrinking while the broader economy grows, displacement isn't hypothetical — it's happening.</p>
+                        <p class="indicator-detail">Control: +0.16% · Exposed: -0.53% · Gap: +0.69 percentage points</p>
+                        <p><strong>Source:</strong> BLS CES (Current Employment Statistics) — Information, Financial Activities, Professional Services vs. Total Nonfarm</p>
+                    </div>
+                </details>
+            </div>
+
+            <div class="indicator-row">
+                <div class="indicator-header">
+                    <span class="indicator-name">Money Circulation Velocity</span>
+                </div>
+                <div class="indicator-bar-container">
+                    <div class="indicator-bar"><div class="indicator-bar-fill bar-none" style="width: 0%"></div></div>
+                    <span class="indicator-signal signal-none">0.0</span>
+                </div>
+                <details class="indicator-expand">
+                    <summary>Is money sitting idle at the top instead of flowing through paychecks and cash registers?</summary>
+                    <div class="indicator-expand-body">
+                        <p>Money Circulation Velocity (M2V) measures how many times a dollar circulates through the economy. When income concentrates in fewer hands, money circulates less — wealthy households save a higher fraction. M2V has fallen from 2.19 in 1997 to ~1.41 today.</p>
+                        <p><strong>Why it matters:</strong> When a worker gets paid, that money bounces through the economy — rent, groceries, restaurants. When that same money becomes corporate profit instead, it sits still. Falling velocity means dollars are pooling at the top instead of circulating. Currently velocity is rising slightly, which is a point against the thesis.</p>
+                        <p class="indicator-detail">1.392 → 1.409 · YoY: +0.017</p>
+                        <p><strong>Source:</strong> FRED series M2V (Velocity of M2 Money Stock)</p>
+                    </div>
+                </details>
+            </div>
+
+            <div class="indicator-row">
+                <div class="indicator-header">
+                    <span class="indicator-name">Ghost GDP</span>
+                </div>
+                <div class="indicator-bar-container">
+                    <div class="indicator-bar"><div class="indicator-bar-fill bar-low" style="width: 20%"></div></div>
+                    <span class="indicator-signal signal-low">0.2</span>
+                </div>
+                <details class="indicator-expand">
+                    <summary>Is the economy growing while people's paychecks aren't keeping up?</summary>
+                    <div class="indicator-expand-body">
+                        <p>Measures whether the economy is producing more than it's paying humans. Compares Real GDP growth against Real Personal Income growth (excluding government transfers like stimulus and welfare). If GDP grows 2% but personal income only grows 1%, there's a 1% "ghost" — output whose value stays in corporate treasuries rather than reaching human wallets.</p>
+                        <p class="indicator-detail">GDP: +1.99% · Income: +1.07% · Gap: +0.92 percentage points</p>
+                        <p><strong>Source:</strong> FRED — Real GDP (GDPC1) vs. Real Personal Income Excluding Transfer Receipts (W875RX1)</p>
+                    </div>
+                </details>
+            </div>
+
+            <div class="indicator-row">
+                <div class="indicator-header">
+                    <span class="indicator-name">Consumer Spending Gap</span>
+                </div>
+                <div class="indicator-bar-container">
+                    <div class="indicator-bar"><div class="indicator-bar-fill bar-low" style="width: 10%"></div></div>
+                    <span class="indicator-signal signal-low">0.1</span>
+                </div>
+                <details class="indicator-expand">
+                    <summary>Are people pulling back on spending even though they're still employed?</summary>
+                    <div class="indicator-expand-body">
+                        <p>Ghost GDP measures whether the money is arriving. This measures what people do when it doesn't — or when they're afraid it won't. If people are saving more than usual, consumer confidence is dropping, and unemployment is still low, it means workers have jobs but are scared. They're hoarding cash because they see what's coming.</p>
+                        <p>The other side: if take-home pay falls behind GDP growth, people either burn through savings or go into debt to maintain their lifestyle. Neither is sustainable. Eventually spending drops, and that's when the feedback loop accelerates.</p>
+                        <p class="indicator-detail">GDP: +1.99% · Disp. Income: +1.06% · Gap: +0.93 percentage points</p>
+                        <p><strong>Source:</strong> FRED — Real Disposable Income (DSPIC96), Real GDP (GDPC1), Personal Saving Rate (PSAVERT), Consumer Sentiment (UMCSENT)</p>
+                    </div>
+                </details>
+            </div>
+        </section>
+
+        <!-- 5. Falsification -->
+        <section>
+            <h2>Falsification Tracker</h2>
+            <p class="section-note">These are conditions that would prove the thesis wrong. We want them to be met — the more that are, the less cooked we are.</p>
+            <p class="falsification-summary">3 of 6 conditions met — mixed signals, thesis weakened</p>
+
+            <div class="falsification-row">
+                <span class="falsification-label">AI-exposed hiring keeping pace</span>
+                <span class="falsification-not-met">—</span>
+            </div>
+            <div class="falsification-row">
+                <span class="falsification-label">M2 velocity rising or stable</span>
+                <span class="falsification-met">MET</span>
+            </div>
+            <div class="falsification-row">
+                <span class="falsification-label">Labor share stable or rising</span>
+                <span class="falsification-not-met">—</span>
+            </div>
+            <div class="falsification-row">
+                <span class="falsification-label">Delinquency below base rates</span>
+                <span class="falsification-met">MET</span>
+            </div>
+            <div class="falsification-row">
+                <span class="falsification-label">Income grows in line with GDP</span>
+                <span class="falsification-met">MET</span>
+            </div>
+            <div class="falsification-row">
+                <span class="falsification-label">Debt service stable or declining</span>
+                <span class="falsification-not-met">—</span>
+            </div>
+        </section>
+
+        <!-- 6. AI-Exposure Detail -->
+        <section>
+            <h2>AI-Exposure Detail</h2>
+            <p class="not-scored">Not scored — subsector context</p>
+
+            <div class="subsector-row">
+                <span class="subsector-name">Software Publishers</span>
+                <span class="subsector-value declining">-6.1%<span class="subsector-flag">declining</span></span>
+            </div>
+            <div class="subsector-row">
+                <span class="subsector-name">Telecommunications</span>
+                <span class="subsector-value declining">-4.0%<span class="subsector-flag">declining</span></span>
+            </div>
+            <div class="subsector-row">
+                <span class="subsector-name">Advertising & PR</span>
+                <span class="subsector-value declining">-1.2%</span>
+            </div>
+            <div class="subsector-row">
+                <span class="subsector-name">Computer Systems Design</span>
+                <span class="subsector-value stable">+0.1%</span>
+            </div>
+            <div class="subsector-row">
+                <span class="subsector-name">Insurance Carriers</span>
+                <span class="subsector-value stable">-0.8%</span>
+            </div>
+            <div class="subsector-row">
+                <span class="subsector-name">Employment Services</span>
+                <span class="subsector-value stable">-0.6%</span>
+            </div>
+            <div class="subsector-row">
+                <span class="subsector-name">Accounting</span>
+                <span class="subsector-value stable">-0.1%</span>
+            </div>
+            <div class="subsector-row">
+                <span class="subsector-name">Legal Services</span>
+                <span class="subsector-value growing">+1.4%</span>
+            </div>
+            <div class="subsector-row">
+                <span class="subsector-name">Office Admin</span>
+                <span class="subsector-value growing">+0.2%</span>
+            </div>
+            <div class="subsector-row">
+                <span class="subsector-name">Market Research</span>
+                <span class="subsector-value growing">+1.1%</span>
+            </div>
+        </section>
+
+        <!-- ECI Workforce Composition -->
+        <section>
+            <h2>Workforce Composition</h2>
+            <p class="not-scored">Not scored — who's getting cut and who's being kept</p>
+
+            <div class="eci-row">
+                <span class="eci-sector">Information</span>
+                <div>
+                    <div class="eci-values">Cost/Worker <span class="growing">+2.9%</span> · Headcount <span class="declining">-2.7%</span></div>
+                    <div class="eci-pattern">Fewer people, each paid more — juniors cut, seniors kept</div>
+                </div>
+            </div>
+            <div class="eci-row">
+                <span class="eci-sector">Professional / Scientific</span>
+                <div>
+                    <div class="eci-values">Cost/Worker <span class="growing">+3.2%</span> · Headcount <span class="declining">-0.2%</span></div>
+                    <div class="eci-pattern">Fewer people, each paid more — juniors cut, seniors kept</div>
+                </div>
+            </div>
+            <div class="eci-row">
+                <span class="eci-sector">All Private (control)</span>
+                <div>
+                    <div class="eci-values">Cost/Worker <span class="growing">+3.4%</span> · Headcount <span class="growing">+0.2%</span></div>
+                    <div class="eci-pattern eci-healthy">More people, each paid more — healthy growth</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. Convergence -->
+        <section>
+            <h2>Convergence</h2>
+            <p class="convergence">1 of 7 indicators active (signal ≥ 0.3). When 4 or more light up at once, it suggests the feedback loop is active — not just isolated signals. We're not there yet.</p>
+        </section>
+
+        <!-- 8. What would prevent this -->
+        <section class="plain-english">
+            <h2>What would prevent this</h2>
+            <p>This isn't inevitable. There are real ways the economy absorbs the shock without a crisis:</p>
+
+            <p><strong>Displaced workers find new jobs at similar pay.</strong> This is the historical pattern. Every past wave of automation — agriculture, manufacturing — eventually created more jobs than it destroyed. If that happens again fast enough, the income gap never opens.</p>
+
+            <p><strong>Companies reinvest AI savings into hiring, not just profits.</strong> A company saves money by automating five roles. Instead of pocketing the savings, they hire five different people to expand into things they couldn't afford before. The money stays in the paycheck cycle.</p>
+
+            <p><strong>New industries emerge that we can't predict yet.</strong> The internet created entire careers — social media managers, UX designers, cloud architects — that nobody saw coming. AI could do the same.</p>
+
+            <p><strong>AI makes workers more valuable, not replaceable.</strong> Instead of one AI replacing five workers, five workers each use AI to become dramatically more productive. Companies keep the people and produce more. Income stays with workers.</p>
+
+            <p><strong>People prefer humans.</strong> A human financial advisor, a human therapist, a human-written article. If consumers pay a premium for human work, that sustains demand for labor even when AI can do the job cheaper.</p>
+
+            <h3>Didn't we say the same thing about the Industrial Revolution?</h3>
+            <p>Yes. And it worked out — eventually. But there are reasons this time might be different.</p>
+
+            <p>The Industrial Revolution replaced <strong>muscle</strong>. It couldn't replace judgment, communication, creativity, or analysis. So displaced workers moved "up" into cognitive work — office jobs, management, professional services. AI replaces the cognitive work itself. Where do you move up to when the thing being automated is thinking?</p>
+
+            <p>Then there's speed. The Industrial Revolution played out over generations. Workers had decades to adapt, retrain, and shift industries. AI capability is accelerating fast, and the gap between "AI can't do this job" and "AI does this job better" could shrink rapidly. The question isn't whether the economy adjusts — historically it has — it's whether it adjusts fast enough.</p>
+
+            <p>The other difference is breadth. Industrial automation was concentrated in physical labor — factories, farms, mills — and spread across them over decades. White-collar work was untouched, so displaced workers had somewhere to go. AI hits software, finance, legal, marketing, and accounting all at once. There's no "adjacent industry" absorbing displaced workers when every adjacent industry is being hit at the same time.</p>
+
+            <p>None of this means the crisis is guaranteed. The score is low right now. The falsification conditions exist for a reason — if the economy is absorbing this well, the data will show it. But the reason to watch is that the usual argument — "it worked out last time" — depends on conditions that may not hold this time.</p>
+        </section>
+
+        <!-- 9. Methodology note -->
+        <section>
+            <details class="indicator-expand">
+                <summary>How precise is the score?</summary>
+                <div class="indicator-expand-body">
+                    <p>The concepts this index tracks — labor share decline, hiring gaps, debt stress, Ghost GDP — come directly from the research paper. But the paper doesn't tell you "if mortgage delinquency hits 3%, that's a 0.2 signal." It operates at a higher level of abstraction.</p>
+                    <p>The specific thresholds that turn raw data into signal scores are calibration estimates. They're informed by historical norms and standard macroeconomic benchmarks, but they're not derived from the paper. Someone could argue they should be more or less sensitive and we wouldn't have hard data to settle it.</p>
+                    <p>What that means: <strong>read the score as directional, not precise.</strong> Whether it's 28 or 32 matters less than whether it's trending up or down quarter over quarter. The trend is reliable even if the exact level isn't, because the same thresholds applied consistently still show you which direction things are moving. This is the first quarter the index has been published, so there's no trend data yet — that starts next quarter.</p>
+                </div>
+            </details>
+        </section>
+
+        <!-- 10. Footer -->
+        <footer>
+            Built by <a href="https://justintallant.com" target="_blank">Justin Tallant</a> ·
+            Based on <a href="https://arxiv.org/abs/2603.09209" target="_blank">Abundant Intelligence and Deficient Demand</a> by Xupeng Chen ·
+            <a href="https://fred.stlouisfed.org/" target="_blank">FRED</a> ·
+            <a href="https://www.bls.gov/developers/" target="_blank">BLS</a> ·
+            <a href="https://github.com" target="_blank">GitHub</a>
+            <div class="updated">Last updated: Q1 2026 · Data as of Q4 2025 / March 2026</div>
+        </footer>
+
+    </div>
+</body>
+</html>

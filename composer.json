@@ -1,0 +1,27 @@
+{
+    "name": "jtallant/ddi",
+    "description": "The Cook Index — Deficient Demand Index",
+    "type": "project",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "DDI\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "DDI\\Tests\\": "tests/"
+        }
+    },
+    "require": {
+        "php": ">=8.1"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^11.0",
+        "phpstan/phpstan": "^2.1"
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit",
+        "stan": "vendor/bin/phpstan analyse --memory-limit=512M"
+    }
+}
