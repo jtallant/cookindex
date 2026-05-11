@@ -414,6 +414,10 @@
             color: #7a8a3e;
         }
 
+        .eci-neutral {
+            color: #888;
+        }
+
         .eci-legend {
             font-size: 14px;
             color: #777;
@@ -469,6 +473,65 @@
             margin-bottom: 16px;
         }
 
+        /* --- Score History --- */
+
+        .history-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid #1e1e1e;
+            font-size: 15px;
+        }
+
+        .history-quarter {
+            color: #888;
+            min-width: 70px;
+            font-size: 14px;
+        }
+
+        .history-bar {
+            flex: 1;
+            height: 6px;
+            background: #222;
+            border-radius: 3px;
+            overflow: hidden;
+            min-width: 60px;
+        }
+
+        .history-bar-fill {
+            height: 100%;
+            border-radius: 3px;
+        }
+
+        .history-score {
+            min-width: 42px;
+            text-align: right;
+            font-weight: 500;
+        }
+
+        .history-delta {
+            min-width: 48px;
+            text-align: right;
+            font-size: 14px;
+            color: #888;
+        }
+
+        .history-delta-up {
+            color: #d4763a;
+        }
+
+        .history-delta-down {
+            color: #7a8a3e;
+        }
+
+        .history-note {
+            font-size: 13px;
+            color: #666;
+            margin-top: 12px;
+            font-style: italic;
+        }
+
         /* --- GDP Exposure --- */
 
         .gdp-block {
@@ -506,12 +569,30 @@
         <!-- 1. Hero -->
         <div class="hero">
             <h1>The Cook Index</h1>
-            <div class="score">29.9</div>
+            <div class="score">30.4</div>
             <div class="score-max">/ 100</div>
             <div class="score-label">Noise range — some movement but within historical norms</div>
             <p class="tagline">The Cook Index tracks whether AI is replacing workers so fast that there won't be enough people with money left to buy what AI produces, creating a feedback loop that ends in total economic collapse. So the question is, how cooked are we?</p>
             <p class="paper-link">Based on <a href="https://arxiv.org/abs/2603.09209" target="_blank">Abundant Intelligence and Deficient Demand</a> by Xupeng Chen</p>
         </div>
+
+        <!-- 1b. Score History -->
+        <section>
+            <h2>Score History</h2>
+            <div class="history-row">
+                <span class="history-quarter mono">Q2 2026</span>
+                <div class="history-bar"><div class="history-bar-fill bar-low" style="width: 30.4%"></div></div>
+                <span class="history-score mono">30.4</span>
+                <span class="history-delta mono history-delta-up">+0.5</span>
+            </div>
+            <div class="history-row">
+                <span class="history-quarter mono">Q1 2026</span>
+                <div class="history-bar"><div class="history-bar-fill bar-low" style="width: 29.9%"></div></div>
+                <span class="history-score mono">29.9</span>
+                <span class="history-delta mono">—</span>
+            </div>
+            <p class="history-note">Two data points is direction, not yet a trend. <a href="https://github.com/jtallant/cookindex/blob/main/docs/history/q1-2026.md" target="_blank" style="color: #5a9fcf; text-decoration: none;">Q1 2026 snapshot</a>.</p>
+        </section>
 
         <!-- 2. Plain English -->
         <section class="plain-english">
@@ -572,8 +653,8 @@
                     <div class="indicator-expand-body">
                         <p>Labor share measures what fraction of national income goes to workers (wages + benefits) vs. capital owners (profits, interest, rent). It's been declining for decades, but we're watching for an <strong>acceleration</strong> beyond the historical trend.</p>
                         <p><strong>Why it matters:</strong> Workers spend most of their income. Capital owners don't. If income shifts from paychecks to profits, spending power drops even if the economy looks fine on paper.</p>
-                        <p class="indicator-detail">96.937 → 96.224 · YoY: -0.713 · accel: -0.513 beyond baseline</p>
-                        <p><strong>Source:</strong> FRED series PRS85006173 (Nonfarm Business Sector: Labor Share)</p>
+                        <p class="indicator-detail">97.017 → 96.184 · 4Q-avg YoY: -0.834 · accel: -0.634 beyond baseline</p>
+                        <p><strong>Source:</strong> FRED series PRS85006173 (Nonfarm Business Sector: Labor Share). Compared as trailing 4-quarter average vs. the prior 4-quarter average to absorb single-quarter noise — see <a href="https://github.com/jtallant/cookindex/blob/main/docs/yoy-smoothing.md" target="_blank">methodology note</a>.</p>
                     </div>
                 </details>
             </div>
@@ -591,7 +672,7 @@
                     <div class="indicator-expand-body">
                         <p>Compares job openings in AI-exposed sectors (tech, finance, professional services) against the overall economy. Hiring freezes show up before layoffs — the absence of new postings is the earliest signal that companies are choosing AI over headcount.</p>
                         <p><strong>Why it matters:</strong> Companies stop posting jobs before they start laying people off. If tech, finance, and professional services go quiet while everyone else is still hiring, AI is replacing headcount.</p>
-                        <p class="indicator-detail">Control: -4.97% · Exposed: +3.63% · Gap: -8.60 percentage points</p>
+                        <p class="indicator-detail">Control: -1.24% · Exposed: -0.94% · Gap: -0.30 percentage points</p>
                         <p><strong>Source:</strong> BLS JOLTS (Job Openings and Labor Turnover Survey) — Professional Services, Information, Finance vs. Total Nonfarm</p>
                     </div>
                 </details>
@@ -629,7 +710,7 @@
                     <summary>Are AI-exposed industries actually cutting workers while the rest of the economy holds steady?</summary>
                     <div class="indicator-expand-body">
                         <p>Compares actual headcount in AI-exposed sectors against the overall economy. Job openings show hiring intent; this shows whether people are actually losing jobs. If AI-exposed sectors are shrinking while the broader economy grows, displacement isn't hypothetical — it's happening.</p>
-                        <p class="indicator-detail">Control: +0.16% · Exposed: -0.53% · Gap: +0.69 percentage points</p>
+                        <p class="indicator-detail">Control: +0.16% · Exposed: -0.59% · Gap: +0.75 percentage points</p>
                         <p><strong>Source:</strong> BLS CES (Current Employment Statistics) — Information, Financial Activities, Professional Services vs. Total Nonfarm</p>
                     </div>
                 </details>
@@ -648,7 +729,7 @@
                     <div class="indicator-expand-body">
                         <p>Money Circulation Velocity (M2V) measures how many times a dollar circulates through the economy. When income concentrates in fewer hands, money circulates less — wealthy households save a higher fraction. M2V has fallen from 2.19 in 1997 to ~1.41 today.</p>
                         <p><strong>Why it matters:</strong> When a worker gets paid, that money bounces through the economy — rent, groceries, restaurants. When that same money becomes corporate profit instead, it sits still. Falling velocity means dollars are pooling at the top instead of circulating. Currently velocity is rising slightly, which is a point against the thesis.</p>
-                        <p class="indicator-detail">1.392 → 1.409 · YoY: +0.017</p>
+                        <p class="indicator-detail">1.390 → 1.411 · YoY: +0.021</p>
                         <p><strong>Source:</strong> FRED series M2V (Velocity of M2 Money Stock)</p>
                     </div>
                 </details>
@@ -659,14 +740,14 @@
                     <span class="indicator-name">Ghost GDP</span>
                 </div>
                 <div class="indicator-bar-container">
-                    <div class="indicator-bar"><div class="indicator-bar-fill bar-low" style="width: 20%"></div></div>
-                    <span class="indicator-signal signal-low">0.2</span>
+                    <div class="indicator-bar"><div class="indicator-bar-fill bar-moderate" style="width: 40%"></div></div>
+                    <span class="indicator-signal signal-moderate">0.4</span>
                 </div>
                 <details class="indicator-expand">
                     <summary>Is the economy growing while people's paychecks aren't keeping up?</summary>
                     <div class="indicator-expand-body">
                         <p>Measures whether the economy is producing more than it's paying humans. Compares Real GDP growth against Real Personal Income growth (excluding government transfers like stimulus and welfare). If GDP grows 2% but personal income only grows 1%, there's a 1% "ghost" — output whose value stays in corporate treasuries rather than reaching human wallets.</p>
-                        <p class="indicator-detail">GDP: +1.99% · Income: +1.07% · Gap: +0.92 percentage points</p>
+                        <p class="indicator-detail">GDP: +2.27% · Income: +0.96% · Gap: +1.31 percentage points</p>
                         <p><strong>Source:</strong> FRED — Real GDP (GDPC1) vs. Real Personal Income Excluding Transfer Receipts (W875RX1)</p>
                     </div>
                 </details>
@@ -685,8 +766,28 @@
                     <div class="indicator-expand-body">
                         <p>Ghost GDP measures whether the money is arriving. This measures what people do when it doesn't — or when they're afraid it won't. If people are saving more than usual, consumer confidence is dropping, and unemployment is still low, it means workers have jobs but are scared. They're hoarding cash because they see what's coming.</p>
                         <p>The other side: if take-home pay falls behind GDP growth, people either burn through savings or go into debt to maintain their lifestyle. Neither is sustainable. Eventually spending drops, and that's when the feedback loop accelerates.</p>
-                        <p class="indicator-detail">GDP: +1.99% · Disp. Income: +1.06% · Gap: +0.93 percentage points</p>
+                        <p class="indicator-detail">GDP: +2.27% · Disp. Income: +1.49% · Gap: +0.78 percentage points</p>
                         <p><strong>Source:</strong> FRED — Real Disposable Income (DSPIC96), Real GDP (GDPC1), Personal Saving Rate (PSAVERT), Consumer Sentiment (UMCSENT)</p>
+                    </div>
+                </details>
+            </div>
+
+            <div class="indicator-row">
+                <div class="indicator-header">
+                    <span class="indicator-name">Median Wage Lag</span>
+                </div>
+                <div class="indicator-bar-container">
+                    <div class="indicator-bar"><div class="indicator-bar-fill bar-none" style="width: 0%"></div></div>
+                    <span class="indicator-signal signal-none">0.0</span>
+                </div>
+                <details class="indicator-expand">
+                    <summary>Is the typical worker keeping up with the economy's overall growth, or is the gain concentrating at the top?</summary>
+                    <div class="indicator-expand-body">
+                        <p>Aggregate personal income tells us how big the total pile of paychecks is. It can't tell us whether everyone got a small raise (broad growth) or a few high earners pulled the average up while most workers stagnated (concentration). Median wages — what the typical worker takes home — fills that gap.</p>
+                        <p><strong>Why it matters:</strong> The paper's mechanism is asymmetric. Displaced middle-class workers either drop out or take pay cuts, while owners and capital-income earners benefit from rising profits. The aggregate stays fine because the top pulls it up, but the median sags. Without measuring median, that pattern is invisible — it looks identical to a generic broad slowdown.</p>
+                        <p>This quarter the gap is slightly negative — median wages grew slightly faster than aggregate income. That points to weakness in capital flows to households (interest, dividends, retained profits) rather than middle-class wages, which is anti-thesis evidence for this reading.</p>
+                        <p class="indicator-detail">Aggregate: +0.96% · Median wage: +1.28% · Gap: -0.32 percentage points</p>
+                        <p><strong>Source:</strong> BLS series LES1252882800 (median real weekly earnings, full-time, 16+, constant 1982-84 dollars) vs. FRED W875RX1 (real personal income ex-transfers). See <a href="https://github.com/jtallant/cookindex/blob/main/docs/median-wage-indicator.md" target="_blank">methodology note</a>.</p>
                     </div>
                 </details>
             </div>
@@ -696,7 +797,7 @@
         <section>
             <h2>Falsification Tracker</h2>
             <p class="section-note">These are conditions that would prove the thesis wrong. We want them to be met — the more that are, the less cooked we are.</p>
-            <p class="falsification-summary">3 of 6 conditions met — mixed signals, thesis weakened</p>
+            <p class="falsification-summary">2 of 6 conditions met — mixed signals, thesis weakened</p>
 
             <div class="falsification-row">
                 <span class="falsification-label">AI-exposed hiring keeping pace</span>
@@ -716,7 +817,7 @@
             </div>
             <div class="falsification-row">
                 <span class="falsification-label">Income grows in line with GDP</span>
-                <span class="falsification-met">MET</span>
+                <span class="falsification-not-met">—</span>
             </div>
             <div class="falsification-row">
                 <span class="falsification-label">Debt service stable or declining</span>
@@ -731,43 +832,43 @@
 
             <div class="subsector-row">
                 <span class="subsector-name">Software Publishers</span>
-                <span class="subsector-value declining">-6.1%<span class="subsector-flag">declining</span></span>
+                <span class="subsector-value declining">-8.3%<span class="subsector-flag">declining</span></span>
             </div>
             <div class="subsector-row">
                 <span class="subsector-name">Telecommunications</span>
-                <span class="subsector-value declining">-4.0%<span class="subsector-flag">declining</span></span>
+                <span class="subsector-value declining">-3.9%<span class="subsector-flag">declining</span></span>
             </div>
             <div class="subsector-row">
                 <span class="subsector-name">Advertising & PR</span>
-                <span class="subsector-value declining">-1.2%</span>
-            </div>
-            <div class="subsector-row">
-                <span class="subsector-name">Computer Systems Design</span>
-                <span class="subsector-value stable">+0.1%</span>
+                <span class="subsector-value stable">-0.1%</span>
             </div>
             <div class="subsector-row">
                 <span class="subsector-name">Insurance Carriers</span>
-                <span class="subsector-value stable">-0.8%</span>
+                <span class="subsector-value stable">-0.9%</span>
             </div>
             <div class="subsector-row">
                 <span class="subsector-name">Employment Services</span>
                 <span class="subsector-value stable">-0.6%</span>
             </div>
             <div class="subsector-row">
+                <span class="subsector-name">Computer Systems Design</span>
+                <span class="subsector-value growing">+0.3%</span>
+            </div>
+            <div class="subsector-row">
                 <span class="subsector-name">Accounting</span>
-                <span class="subsector-value stable">-0.1%</span>
-            </div>
-            <div class="subsector-row">
-                <span class="subsector-name">Legal Services</span>
-                <span class="subsector-value growing">+1.4%</span>
-            </div>
-            <div class="subsector-row">
-                <span class="subsector-name">Office Admin</span>
-                <span class="subsector-value growing">+0.2%</span>
+                <span class="subsector-value growing">+0.5%</span>
             </div>
             <div class="subsector-row">
                 <span class="subsector-name">Market Research</span>
-                <span class="subsector-value growing">+1.1%</span>
+                <span class="subsector-value growing">+0.8%</span>
+            </div>
+            <div class="subsector-row">
+                <span class="subsector-name">Legal Services</span>
+                <span class="subsector-value growing">+1.7%</span>
+            </div>
+            <div class="subsector-row">
+                <span class="subsector-name">Office Admin</span>
+                <span class="subsector-value growing">+2.3%</span>
             </div>
         </section>
 
@@ -779,15 +880,15 @@
             <div class="eci-row">
                 <span class="eci-sector">Information</span>
                 <div>
-                    <div class="eci-values">Cost/Worker <span class="growing">+2.9%</span> · Headcount <span class="declining">-2.7%</span></div>
+                    <div class="eci-values">Cost/Worker <span class="growing">+3.9%</span> · Headcount <span class="declining">-3.2%</span></div>
                     <div class="eci-pattern">Fewer people, each paid more — juniors cut, seniors kept</div>
                 </div>
             </div>
             <div class="eci-row">
                 <span class="eci-sector">Professional / Scientific</span>
                 <div>
-                    <div class="eci-values">Cost/Worker <span class="growing">+3.2%</span> · Headcount <span class="declining">-0.2%</span></div>
-                    <div class="eci-pattern">Fewer people, each paid more — juniors cut, seniors kept</div>
+                    <div class="eci-values">Cost/Worker <span class="growing">+2.8%</span> · Headcount <span class="declining">-0.1%</span></div>
+                    <div class="eci-pattern eci-neutral">Neutral — within noise of broader economy</div>
                 </div>
             </div>
             <div class="eci-row">
@@ -802,7 +903,7 @@
         <!-- 7. Convergence -->
         <section>
             <h2>Convergence</h2>
-            <p class="convergence">1 of 7 indicators active (signal ≥ 0.3). When 4 or more light up at once, it suggests the feedback loop is active — not just isolated signals. We're not there yet.</p>
+            <p class="convergence">2 of 8 indicators active (signal ≥ 0.3). When 4 or more light up at once, it suggests the feedback loop is active — not just isolated signals. We're not there yet.</p>
         </section>
 
         <!-- 8. What would prevent this -->
@@ -839,7 +940,8 @@
                 <div class="indicator-expand-body">
                     <p>The concepts this index tracks — labor share decline, hiring gaps, debt stress, Ghost GDP — come directly from the research paper. But the paper doesn't tell you "if mortgage delinquency hits 3%, that's a 0.2 signal." It operates at a higher level of abstraction.</p>
                     <p>The specific thresholds that turn raw data into signal scores are calibration estimates. They're informed by historical norms and standard macroeconomic benchmarks, but they're not derived from the paper. Someone could argue they should be more or less sensitive and we wouldn't have hard data to settle it.</p>
-                    <p>What that means: <strong>read the score as directional, not precise.</strong> Whether it's 28 or 32 matters less than whether it's trending up or down quarter over quarter. The trend is reliable even if the exact level isn't, because the same thresholds applied consistently still show you which direction things are moving. This is the first quarter the index has been published, so there's no trend data yet — that starts next quarter.</p>
+                    <p>What that means: <strong>read the score as directional, not precise.</strong> Whether it's 28 or 32 matters less than whether it's trending up or down quarter over quarter. The trend is reliable even if the exact level isn't, because the same thresholds applied consistently still show you which direction things are moving. With two readings so far (Q1 2026 at 29.9, Q2 2026 at 30.4), we have direction but not yet a robust trend — a few more quarters will firm it up.</p>
+                    <p>Methodology changed between Q1 and Q2: Labor Share, Ghost GDP, and Consumer Spending now compare trailing-window averages (4 quarters for quarterly series, 12 months for monthly) rather than single-point year-over-year. This absorbs noisy base periods that were inflating the Q2 reading by several points before correction. Q1 2026's published score used the older method. See <a href="https://github.com/jtallant/cookindex/blob/main/docs/yoy-smoothing.md" target="_blank">the methodology note</a> for the rationale.</p>
                 </div>
             </details>
         </section>
@@ -851,7 +953,7 @@
             <a href="https://fred.stlouisfed.org/" target="_blank">FRED</a> ·
             <a href="https://www.bls.gov/developers/" target="_blank">BLS</a> ·
             <a href="https://github.com/jtallant/cookindex" target="_blank">GitHub</a>
-            <div class="updated">Last updated: Q1 2026 · Data as of Q4 2025 / March 2026</div>
+            <div class="updated">Last updated: Q2 2026 · Data as of Q1 2026 / March 2026</div>
         </footer>
 
     </div>

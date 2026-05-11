@@ -19,6 +19,7 @@ use DDI\Indicators\GhostGdp;
 use DDI\Indicators\JobOpenings;
 use DDI\Indicators\LaborShare;
 use DDI\Indicators\M2Velocity;
+use DDI\Indicators\MedianWageLag;
 use DDI\Indicators\SectorEmployment;
 
 // Load API keys
@@ -83,6 +84,8 @@ $blsData = $bls->fetch([
     'CES6054110001',
     'CES6056110001',
     'CES6054190001',
+    // CPS Median real weekly earnings (constant 1982-84 dollars, full-time, 16+, SA)
+    'LES1252882800',
 ]);
 
 echo "Data loaded.\n\n";
@@ -112,8 +115,7 @@ $m2vResult = (new M2Velocity)->compute($fredData['M2V']);
 
 $ghostGdpResult = (new GhostGdp)->compute(
     $fredData['GDPC1'],
-    $fredData['W875RX1'],
-    $fredData['M2V'] ?? $fredData['GDPC1']
+    $fredData['W875RX1']
 );
 
 $consumerResult = (new ConsumerSpending)->compute(
@@ -132,6 +134,11 @@ $contagionResult = (new FinancialContagion)->compute(
     $fredData['UNRATE']
 );
 
+$medianWageResult = (new MedianWageLag)->compute(
+    $blsData['LES1252882800'],
+    $fredData['W875RX1']
+);
+
 // Composite score
 $indicators = [
     ['name' => 'Labor Share',                 'weight' => 0.30, 'result' => $laborShareResult],
@@ -141,6 +148,7 @@ $indicators = [
     ['name' => 'M2 Velocity',                'weight' => 0.10, 'result' => $m2vResult],
     ['name' => 'Ghost GDP (Income Wedge)',    'weight' => 0.10, 'result' => $ghostGdpResult],
     ['name' => 'Consumer Spending Divergence','weight' => 0.05, 'result' => $consumerResult],
+    ['name' => 'Median Wage Lag',             'weight' => 0.05, 'result' => $medianWageResult],
 ];
 
 $composite = (new Composite)->compute($indicators);

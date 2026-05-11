@@ -7,6 +7,9 @@ use DDI\TimeSeries;
 
 class ConsumerSpending
 {
+    private const QUARTERLY_WINDOW = 4;
+    private const MONTHLY_WINDOW = 12;
+
     public function compute(
         TimeSeries $gdp,
         TimeSeries $disposableIncome,
@@ -14,8 +17,8 @@ class ConsumerSpending
         TimeSeries $sentiment,
         TimeSeries $unemployment,
     ): IndicatorResult {
-        $incYoy = $disposableIncome->yoy();
-        $gdpYoy = $gdp->yoy();
+        $gdpYoy = $gdp->smoothedYoyPercent(self::QUARTERLY_WINDOW);
+        $incYoy = $disposableIncome->smoothedYoyPercent(self::MONTHLY_WINDOW);
 
         if ($incYoy === null || $gdpYoy === null) {
             return new IndicatorResult(0.0, 'N/A');

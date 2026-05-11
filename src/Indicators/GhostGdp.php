@@ -7,31 +7,22 @@ use DDI\TimeSeries;
 
 class GhostGdp
 {
+    private const QUARTERLY_WINDOW = 4;
+    private const MONTHLY_WINDOW = 12;
+
     /**
-     * @param TimeSeries $gdp Real GDP (GDPC1)
-     * @param TimeSeries $income Real Personal Income ex-transfers (W875RX1)
-     * @param TimeSeries $referenceQuarter Series to align quarterly dates against (typically M2V)
+     * @param TimeSeries $gdp Real GDP (GDPC1, quarterly)
+     * @param TimeSeries $income Real Personal Income ex-transfers (W875RX1, monthly)
      */
-    public function compute(TimeSeries $gdp, TimeSeries $income, TimeSeries $referenceQuarter): IndicatorResult
+    public function compute(TimeSeries $gdp, TimeSeries $income): IndicatorResult
     {
-        $latestDate = $referenceQuarter->latest()['date'] ?? null;
-        $yearAgoDate = $referenceQuarter->yearAgo()['date'] ?? null;
+        $gdpYoy = $gdp->smoothedYoyPercent(self::QUARTERLY_WINDOW);
+        $incYoy = $income->smoothedYoyPercent(self::MONTHLY_WINDOW);
 
-        if ($latestDate === null || $yearAgoDate === null) {
+        if ($gdpYoy === null || $incYoy === null) {
             return new IndicatorResult(0.0, 'N/A');
         }
 
-        $gdpLatest = $gdp->findClosest($latestDate);
-        $gdpYearAgo = $gdp->findClosest($yearAgoDate);
-        $incLatest = $income->findClosest($latestDate);
-        $incYearAgo = $income->findClosest($yearAgoDate);
-
-        if (!$gdpLatest || !$gdpYearAgo || !$incLatest || !$incYearAgo) {
-            return new IndicatorResult(0.0, 'N/A');
-        }
-
-        $gdpYoy = (($gdpLatest - $gdpYearAgo) / $gdpYearAgo) * 100;
-        $incYoy = (($incLatest - $incYearAgo) / $incYearAgo) * 100;
         $gap = $gdpYoy - $incYoy;
 
         $signal = 0.0;

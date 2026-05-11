@@ -41,8 +41,20 @@ class TimeSeries
     {
         $points = [];
         foreach ($data as $d) {
-            $month = (int) str_replace('M', '', $d['period']);
-            if ($month < 1 || $month > 12) continue;
+            if ($d['value'] === '-' || $d['value'] === '') continue;
+
+            $period = $d['period'];
+            if (str_starts_with($period, 'M')) {
+                $month = (int) substr($period, 1);
+                if ($month < 1 || $month > 12) continue;
+            } elseif (str_starts_with($period, 'Q')) {
+                $quarter = (int) substr($period, 1);
+                if ($quarter < 1 || $quarter > 4) continue;
+                $month = ($quarter - 1) * 3 + 1;
+            } else {
+                continue;
+            }
+
             $date = sprintf('%s-%02d-01', $d['year'], $month);
             $points[$date] = (float) $d['value'];
         }
@@ -96,6 +108,46 @@ class TimeSeries
         $yearAgo = $this->yearAgo($toleranceDays);
         if ($latest === null || $yearAgo === null || $yearAgo['value'] == 0) return null;
         return (($latest['value'] - $yearAgo['value']) / $yearAgo['value']) * 100;
+    }
+
+    /**
+     * Average of the last $n observations.
+     */
+    public function trailingAverage(int $n): ?float
+    {
+        if ($n < 1 || count($this->points) < $n) return null;
+        $tail = array_slice(array_values($this->points), -$n);
+        return array_sum($tail) / $n;
+    }
+
+    /**
+     * Smoothed YoY: average of the last $n observations vs. the average
+     * of the $n observations before that. Returns absolute difference
+     * (in series units), not a percent. Use this when single-point YoY
+     * is too sensitive to a noisy base period.
+     */
+    public function smoothedYoyDelta(int $n = 4): ?float
+    {
+        if (count($this->points) < $n * 2) return null;
+        $values = array_values($this->points);
+        $recent = array_slice($values, -$n);
+        $prior = array_slice($values, -($n * 2), $n);
+        return (array_sum($recent) / $n) - (array_sum($prior) / $n);
+    }
+
+    /**
+     * Smoothed YoY as a percent change of the trailing $n-window average
+     * vs. the prior $n-window average. Same shape as smoothedYoyDelta but
+     * expressed as a percentage so series in different units can be compared.
+     */
+    public function smoothedYoyPercent(int $n = 4): ?float
+    {
+        if (count($this->points) < $n * 2) return null;
+        $values = array_values($this->points);
+        $recent = array_sum(array_slice($values, -$n)) / $n;
+        $prior = array_sum(array_slice($values, -($n * 2), $n)) / $n;
+        if ($prior == 0) return null;
+        return (($recent - $prior) / $prior) * 100;
     }
 
     public function findClosest(string $targetDate): ?float

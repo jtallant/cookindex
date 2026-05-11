@@ -8,17 +8,18 @@ use DDI\TimeSeries;
 class LaborShare
 {
     private const HISTORICAL_RATE = -0.2;
+    private const SMOOTHING_WINDOW = 4;
 
     public function compute(TimeSeries $laborShare): IndicatorResult
     {
-        $latest = $laborShare->latest();
-        $yearAgo = $laborShare->yearAgo();
+        $yoyChange = $laborShare->smoothedYoyDelta(self::SMOOTHING_WINDOW);
+        $recentAvg = $laborShare->trailingAverage(self::SMOOTHING_WINDOW);
 
-        if ($latest === null || $yearAgo === null) {
+        if ($yoyChange === null || $recentAvg === null) {
             return new IndicatorResult(0.0, 'N/A');
         }
 
-        $yoyChange = $latest['value'] - $yearAgo['value'];
+        $priorAvg = $recentAvg - $yoyChange;
         $acceleration = $yoyChange - self::HISTORICAL_RATE;
 
         $signal = 0.0;
@@ -31,8 +32,8 @@ class LaborShare
         }
 
         $detail = sprintf(
-            '%.3f → %.3f (YoY: %+.3f, accel: %+.3f beyond baseline)',
-            $yearAgo['value'], $latest['value'], $yoyChange, $acceleration
+            '%.3f → %.3f (4Q-avg YoY: %+.3f, accel: %+.3f beyond baseline)',
+            $priorAvg, $recentAvg, $yoyChange, $acceleration
         );
 
         return new IndicatorResult($signal, $detail);
